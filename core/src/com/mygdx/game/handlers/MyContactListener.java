@@ -17,9 +17,6 @@ public class MyContactListener implements ContactListener {
     public void beginContact(Contact contact) {
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
-
-        System.out.println(fa.getUserData() + "   " + fb.getUserData());
-
     }
 
     // Called when 2 fixtures no longer collide

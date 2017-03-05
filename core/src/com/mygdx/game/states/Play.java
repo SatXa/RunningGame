@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.handlers.B2DVars;
 import com.mygdx.game.handlers.GameStateManager;
 import com.mygdx.game.handlers.MyContactListener;
+import com.mygdx.game.handlers.MyInput;
 import com.mygdx.game.main.Game;
 
 import static com.mygdx.game.handlers.B2DVars.PPM;
@@ -86,11 +87,27 @@ public class Play extends GameState {
 
     @Override
     public void handleInput() {
+        if(MyInput.isPressed(MyInput.BUTTON1)) {
+        System.out.println("PRESSED Z");
+        }
 
+        if(MyInput.isPressed(MyInput.BUTTON2)) {
+            System.out.println("PRESSED X");
+        }
+
+        if(MyInput.isDown(MyInput.BUTTON1)) {
+            System.out.println("PRESSED Z");
+        }
+
+        if(MyInput.isDown(MyInput.BUTTON2)) {
+            System.out.println("PRESSED X");
+        }
     }
 
     @Override
     public void update(float delta) {
+        handleInput();
+
         world.step(delta, 6, 2);
     }
 
