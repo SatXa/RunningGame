@@ -52,18 +52,8 @@ public class Play extends GameState {
         // Platform
 
         BodyDef bdef = new BodyDef();
-        bdef.position.set(160 / PPM, 60 / PPM);
-        bdef.type = BodyDef.BodyType.StaticBody;
-
-        Body body = world.createBody(bdef);
-
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(50 / PPM, 5 / PPM);
         FixtureDef fdef = new FixtureDef();
-        fdef.filter.categoryBits = B2DVars.BIT_GROUND;
-        fdef.filter.maskBits = B2DVars.BIT_PLAYER;
-        fdef.shape = shape;
-        body.createFixture(fdef).setUserData(" GROUND ");
 
         // Player
         bdef.position.set(160 / PPM, 200 / PPM);
@@ -72,7 +62,7 @@ public class Play extends GameState {
 
         shape.setAsBox(5 / PPM, 5 / PPM);
         fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-        fdef.filter.maskBits = B2DVars.BIT_GROUND;
+        fdef.filter.maskBits = B2DVars.BIT_RED | B2DVars.BIT_BLUE | B2DVars.BIT_GREEN;
         fdef.shape = shape;
         fdef.restitution = 0.5f;
         playerBody.createFixture(fdef).setUserData(" Player ");
@@ -81,7 +71,7 @@ public class Play extends GameState {
         shape.setAsBox(2 / PPM, 2 / PPM, new Vector2(0, -5 / PPM), 0);
         fdef.shape = shape;
         fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-        fdef.filter.maskBits = B2DVars.BIT_GROUND;
+        fdef.filter.maskBits = B2DVars.BIT_RED | B2DVars.BIT_BLUE | B2DVars.BIT_GREEN;
         fdef.isSensor = true;
         playerBody.createFixture(fdef).setUserData(" foot ");
 
@@ -89,10 +79,11 @@ public class Play extends GameState {
         b2dCam.setToOrtho(false, Game.WIDTH / PPM, Game.HEIGHT / PPM);
 
         // MAP
-        tileMap = new TmxMapLoader().load("maps/test_map.tmx");
+//        tileMap = new TmxMapLoader().load("maps/test_map.tmx");
+        tileMap = new TmxMapLoader().load("maps/level1.tmx");
         tmr = new OrthogonalTiledMapRenderer(tileMap);
 
-        TiledMapTileLayer layerRed = (TiledMapTileLayer) tileMap.getLayers().get("Red");
+        TiledMapTileLayer layerRed = (TiledMapTileLayer) tileMap.getLayers().get("red");
 //        TiledMapTileLayer layerGreen = (TiledMapTileLayer) tileMap.getLayers().get("Green");
 //        TiledMapTileLayer layerBlue = (TiledMapTileLayer) tileMap.getLayers().get("Blue");
 
@@ -121,7 +112,7 @@ public class Play extends GameState {
                 cs.createChain(v);
                 fdef.friction = 0;
                 fdef.shape = cs;
-                fdef.filter.categoryBits = 1;
+                fdef.filter.categoryBits = B2DVars.BIT_RED;
                 fdef.filter.maskBits = -1;
                 fdef.isSensor = false;
 
