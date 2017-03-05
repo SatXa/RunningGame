@@ -3,10 +3,15 @@ package com.mygdx.game.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -31,6 +36,10 @@ public class Play extends GameState {
 
     private Body playerBody;
     private MyContactListener cl;
+
+    private TiledMap tileMap;
+    private float tileSize;
+    private OrthogonalTiledMapRenderer tmr;
 
     public Play(GameStateManager gsm) {
         super(gsm);
@@ -78,6 +87,47 @@ public class Play extends GameState {
 
         b2dCam = new OrthographicCamera();
         b2dCam.setToOrtho(false, Game.WIDTH / PPM, Game.HEIGHT / PPM);
+
+        // MAP
+        tileMap = new TmxMapLoader().load("maps/test_map.tmx");
+        tmr = new OrthogonalTiledMapRenderer(tileMap);
+
+        TiledMapTileLayer layerRed = (TiledMapTileLayer) tileMap.getLayers().get("Red");
+//        TiledMapTileLayer layerGreen = (TiledMapTileLayer) tileMap.getLayers().get("Green");
+//        TiledMapTileLayer layerBlue = (TiledMapTileLayer) tileMap.getLayers().get("Blue");
+
+        tileSize = layerRed.getTileWidth();
+
+        for (int row = 0; row < layerRed.getHeight(); row++) {
+            for (int col = 0; col < layerRed.getWidth(); col++) {
+                TiledMapTileLayer.Cell cell = layerRed.getCell(col, row);
+
+                if (cell == null) {
+                    continue;
+                }
+                if (cell.getTile() == null) {
+                    continue;
+                }
+
+                bdef.type = BodyDef.BodyType.StaticBody;
+                bdef.position.set((col + 0.5f) * tileSize / PPM, (row + 0.5f) * tileSize / PPM);
+
+                ChainShape cs = new ChainShape();
+                Vector2[] v = new Vector2[3];
+                v[0] = new Vector2(-tileSize / 2 / PPM, -tileSize / 2 / PPM);
+                v[1] = new Vector2(-tileSize / 2 / PPM, tileSize / 2 / PPM);
+                v[2] = new Vector2(tileSize / 2 / PPM, tileSize / 2 / PPM);
+
+                cs.createChain(v);
+                fdef.friction = 0;
+                fdef.shape = cs;
+                fdef.filter.categoryBits = 1;
+                fdef.filter.maskBits = -1;
+                fdef.isSensor = false;
+
+                world.createBody(bdef).createFixture(fdef);
+            }
+        }
     }
 
     @Override
@@ -88,23 +138,23 @@ public class Play extends GameState {
     @Override
     public void handleInput() {
         // Jump
-        if(MyInput.isPressed(MyInput.BUTTON1)) {
-            if(cl.isPlayerOnGround()) {
+        if (MyInput.isPressed(MyInput.BUTTON1)) {
+            if (cl.isPlayerOnGround()) {
                 playerBody.applyForceToCenter(0, 100, true);
             }
         }
 
-        if(MyInput.isPressed(MyInput.BUTTON2)) {
+        if (MyInput.isPressed(MyInput.BUTTON2)) {
 
         }
 
-        if(MyInput.isDown(MyInput.BUTTON1)) {
-            if(cl.isPlayerOnGround()) {
+        if (MyInput.isDown(MyInput.BUTTON1)) {
+            if (cl.isPlayerOnGround()) {
                 playerBody.applyForceToCenter(0, 100, true);
             }
         }
 
-        if(MyInput.isDown(MyInput.BUTTON2)) {
+        if (MyInput.isDown(MyInput.BUTTON2)) {
 
         }
     }
@@ -121,6 +171,9 @@ public class Play extends GameState {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        b2dr.render(world,b2dCam.combined);
+        tmr.setView(cam);
+        tmr.render();
+
+        b2dr.render(world, b2dCam.combined);
     }
 }
