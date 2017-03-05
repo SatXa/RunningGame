@@ -36,14 +36,16 @@ public class Game extends ApplicationAdapter {
 
     @Override
     public void create() {
-        this.gsm = new GameStateManager(this);
+
         this.sb = new SpriteBatch();
-        System.out.println(sb + "SB 1");
+        System.out.println(sb + " SB 1");
         this.cam = new OrthographicCamera();
         this.hudCam = new OrthographicCamera();
 
         cam.setToOrtho(false, WIDTH, HEIGHT);
         hudCam.setToOrtho(false, WIDTH, HEIGHT);
+
+        this.gsm = new GameStateManager(this);
     }
 
     @Override

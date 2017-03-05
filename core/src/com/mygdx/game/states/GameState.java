@@ -22,7 +22,7 @@ public abstract class GameState {
         this.gsm = gsm;
         this.game = gsm.game();
         this.sb = game.getSpriteBatch();
-        System.out.println(sb + "SB 2");
+        System.out.println(sb + " SB 2");
         this.cam = game.getCamera();
         this.hudCam = game.getHUDCamera();
     }
