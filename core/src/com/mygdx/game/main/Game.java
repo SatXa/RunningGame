@@ -38,7 +38,6 @@ public class Game extends ApplicationAdapter {
     public void create() {
 
         this.sb = new SpriteBatch();
-        System.out.println(sb + " SB 1");
         this.cam = new OrthographicCamera();
         this.hudCam = new OrthographicCamera();
 
