@@ -14,9 +14,10 @@ public class Pin extends B2DSprite {
     public Pin(Body body) {
         super(body);
 
+//        Texture tex = Game.res.getTexture("pin");
         Texture tex = Game.res.getTexture("pin");
-        TextureRegion[] sprites = TextureRegion.split(tex, 64, 64)[0];
+        TextureRegion[] sprites = TextureRegion.split(tex, 16, 16)[0];
 
         setAnimation(sprites, 1 / 12f);
-}
+    }
 }

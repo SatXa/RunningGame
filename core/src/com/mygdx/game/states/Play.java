@@ -43,7 +43,7 @@ import static com.mygdx.game.handlers.B2DVars.PPM;
 public class Play extends GameState {
 
     // SET TO TRUE ONLY WHEN DEBUGGING TO SEE Box2D HITBOXES
-    private boolean debug = false;
+    private boolean debug = true;
 
     private World world;
     private Box2DDebugRenderer b2dr;
@@ -99,8 +99,7 @@ public class Play extends GameState {
             bdef.position.set(x, y);
 
             CircleShape cshape = new CircleShape();
-
-            cshape.setRadius(32 / PPM);
+            cshape.setRadius(8 / PPM);
 
             fdef.shape = cshape;
             fdef.isSensor = true;
@@ -112,8 +111,9 @@ public class Play extends GameState {
 
             Pin pin = new Pin(body);
             pins.add(pin);
-
             body.setUserData(pin);
+
+            cshape.dispose();
         }
     }
 
@@ -159,13 +159,16 @@ public class Play extends GameState {
                 v[2] = new Vector2(tileSize / 2 / PPM, tileSize / 2 / PPM);
 
                 cs.createChain(v);
-                fdef.friction = 0.01f;
+//                fdef.friction = 0.01f; // Only for Free Movement
+                fdef.friction = 0.0f; // 0 Friction is needed for Auto Movement
                 fdef.shape = cs;
                 fdef.filter.categoryBits = bits;
-                fdef.filter.maskBits = -1;
+                fdef.filter.maskBits = BIT_PLAYER;
                 fdef.isSensor = false;
 
                 world.createBody(bdef).createFixture(fdef);
+
+                cs.dispose();
             }
         }
     }
@@ -178,28 +181,29 @@ public class Play extends GameState {
         // Player Body
         bdef.position.set(100 / PPM, 200 / PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
-//        bdef.linearVelocity.set(0, 0); // AUTO MOVEMENT
+        bdef.linearVelocity.set(1f, 0); // AUTO MOVEMENT
         Body body = world.createBody(bdef);
 
         shape.setAsBox(5 / PPM, 5 / PPM);
         fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-        fdef.filter.maskBits = B2DVars.BIT_RED | B2DVars.BIT_BLUE | B2DVars.BIT_GREEN | BIT_PIN;
+        fdef.filter.maskBits = B2DVars.BIT_RED/* | B2DVars.BIT_BLUE | B2DVars.BIT_GREEN*/ | BIT_PIN;
         fdef.shape = shape;
-        fdef.restitution = 0.5f;
+//        fdef.restitution = 0.1f; // Bounciness (even small values make the game harder)
         body.createFixture(fdef).setUserData("player");
 
         // Foot sensor (?)
         shape.setAsBox(2 / PPM, 2 / PPM, new Vector2(0, -5 / PPM), 0);
         fdef.shape = shape;
         fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-        fdef.filter.maskBits = B2DVars.BIT_RED | B2DVars.BIT_BLUE | B2DVars.BIT_GREEN;
+        fdef.filter.maskBits = B2DVars.BIT_RED /*| B2DVars.BIT_BLUE | B2DVars.BIT_GREEN*/;
         fdef.isSensor = true;
         body.createFixture(fdef).setUserData("foot");
 
         // Player
         player = new Player(body);
-
         body.setUserData(player);
+
+        shape.dispose();
     }
 
     @Override
@@ -212,7 +216,8 @@ public class Play extends GameState {
         // Jump
         if (MyInput.isPressed(MyInput.UP)) {
             if (cl.isPlayerOnGround()) {
-                player.getBody().applyForceToCenter(0, 100, true);
+                player.getBody().applyForceToCenter(0, 250, true);
+                Game.res.getSound("jump").play();
             }
         }
 
@@ -221,17 +226,19 @@ public class Play extends GameState {
             switchBlocks();
         }
 
+        // DOESN'T WORK
         // Respawn
         if (MyInput.isPressed(MyInput.RESPAWN)) {
             player.respawn();
         }
 
+        // SCRAPPED (inconsistent, difficult to control)
         // Another jump? Feels smoother...
-        if (MyInput.isDown(MyInput.UP)) {
-            if (cl.isPlayerOnGround()) {
-                player.getBody().applyForceToCenter(0, 100, true);
-            }
-        }
+//        if (MyInput.isDown(MyInput.UP)) {
+//            if (cl.isPlayerOnGround()) {
+//                player.getBody().applyForceToCenter(0, 100, true);
+//            }
+//        }
 
         // Left
         if (MyInput.isDown(MyInput.LEFT)) {
@@ -259,18 +266,20 @@ public class Play extends GameState {
         * Code from https://youtu.be/byMj7ziPfOQ?list=PL-2t7SM0vDfdYJ5Pq9vxeivblbZuFvGJK&t=747
         */
 
-        if (bits != 0 && BIT_RED != 0) {
+        if((bits & B2DVars.BIT_RED) != 0) {
             bits &= ~B2DVars.BIT_RED;
             bits |= B2DVars.BIT_GREEN;
-            System.out.println("GREEN!");
-        } else if (bits != 0 && BIT_GREEN != 0) {
+//            System.out.println("GREEN!");
+        }
+        else if((bits & B2DVars.BIT_GREEN) != 0) {
             bits &= ~B2DVars.BIT_GREEN;
             bits |= B2DVars.BIT_BLUE;
-            System.out.println("BLUE!");
-        } else if (bits != 0 && BIT_BLUE != 0) {
+//            System.out.println("BLUE!");
+        }
+        else if((bits & B2DVars.BIT_BLUE) != 0) {
             bits &= ~B2DVars.BIT_BLUE;
             bits |= B2DVars.BIT_RED;
-            System.out.println("RED!");
+//            System.out.println("RED!");
         }
 
         filter.maskBits = bits;
@@ -280,7 +289,7 @@ public class Play extends GameState {
         // Also for the "feet"
         filter = player.getBody().getFixtureList().get(1)
                 .getFilterData();
-        bits &= B2DVars.BIT_PIN;
+        bits &= ~B2DVars.BIT_PIN;
         filter.maskBits = bits;
         player.getBody().getFixtureList().get(1).setFilterData(filter);
     }
@@ -291,6 +300,16 @@ public class Play extends GameState {
 
         world.step(delta, 6, 2);
 
+        bodyRemoval();
+
+        player.update(delta);
+
+        for (int i = 0; i < pins.size; i++) {
+            pins.get(i).update(delta);
+        }
+    }
+
+    private void bodyRemoval() {
         // Trash removal
         Array<Body> bodies = cl.getTrashBin();
         for (int i = 0; i < bodies.size; i++) {
@@ -298,14 +317,9 @@ public class Play extends GameState {
             pins.removeValue((Pin) b.getUserData(), true);
             world.destroyBody(b);
             player.addPoint();
+            Game.res.getSound("getPin").play();
         }
         bodies.clear();
-
-        player.update(delta);
-
-        for (int i = 0; i < pins.size; i++) {
-            pins.get(i).update(delta);
-        }
     }
 
     @Override
@@ -335,9 +349,13 @@ public class Play extends GameState {
         sb.setProjectionMatrix(hudCam.combined);
         hud.render(sb);
 
-        //Box2D (Player hitbox)
+        //Box2D (Player hitbox) & cam to follow it (DEBUG MODE) (CAMERA DOESN'T WORK (problems with measurements?))
         if (debug) {
             b2dr.render(world, b2dCam.combined);
+
+//            b2dCam.position.set(player.getPosition().x * PPM + Game.WIDTH / 4,
+//                    Game.HEIGHT / 2, 0);
+//            b2dCam.update();
         }
     }
 }

@@ -42,8 +42,12 @@ public class Game extends ApplicationAdapter {
 
         res = new Content();
         res.loadTexture("neku.png", "neku");
-        res.loadTexture("pin.png", "pin");
+        res.loadTexture("pins.png", "pin");
+//        res.loadTexture("pin.png", "pin");
         res.loadTexture("hud.png", "hud");
+
+        res.loadSound("jump.wav", "jump");
+        res.loadSound("pin_get.wav", "getPin");
 
         this.sb = new SpriteBatch();
         this.cam = new OrthographicCamera();

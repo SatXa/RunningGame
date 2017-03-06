@@ -16,6 +16,7 @@ public class MyContactListener implements ContactListener {
 
     private boolean playerOnGround;
     private Array<Body> trashBin;
+    private int numFootContacts;
 
     public MyContactListener() {
         super();
@@ -32,17 +33,18 @@ public class MyContactListener implements ContactListener {
             return;
         }
 
-        if (fa.getUserData() != null && fa.getUserData().equals("foot")) {
-//            playerOnGround = true;
-        }
+//        if (fa.getUserData() != null && fa.getUserData().equals("foot")) {
+////            playerOnGround = true;
+//        }
 
         if (fb.getUserData() != null && fb.getUserData().equals("foot")) {
-            playerOnGround = true;
+//            playerOnGround = true;
+            numFootContacts++;
         }
 
-        if (fb.getUserData() != null && fb.getUserData().equals("pin")) {
-//            trashBin.add(fa.getBody());
-        }
+//        if (fa.getUserData() != null && fa.getUserData().equals("pin")) {
+////            trashBin.add(fa.getBody());
+//        }
 
         if (fb.getUserData() != null && fb.getUserData().equals("pin")) {
             trashBin.add(fb.getBody());
@@ -55,17 +57,19 @@ public class MyContactListener implements ContactListener {
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
 
-        if (fa.getUserData() != null && fa.getUserData().equals("foot")) {
-//            playerOnGround = false;
-        }
+//        if (fa.getUserData() != null && fa.getUserData().equals("foot")) {
+////            playerOnGround = false;
+//        }
 
         if (fb.getUserData() != null && fb.getUserData().equals("foot")) {
-            playerOnGround = false;
+//            playerOnGround = false;
+            numFootContacts--;
         }
     }
 
     public boolean isPlayerOnGround() {
-        return playerOnGround;
+//        return playerOnGround;
+        return numFootContacts > 0;
     }
 
     // Collision detection - preSolve - Collision handling - postSolve

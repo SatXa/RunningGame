@@ -4,6 +4,7 @@ import com.mygdx.game.main.Game;
 import com.mygdx.game.states.GameState;
 import com.mygdx.game.states.Play;
 
+import java.awt.Menu;
 import java.util.Stack;
 
 /**
@@ -13,13 +14,15 @@ import java.util.Stack;
 public class GameStateManager {
 
     public static final int PLAY = 001;
+    public static final int MENU = 002;
+    public static final int LEVEL_MENU = 003;
     private Game game;
     private Stack<GameState> gameStates;
 
     public GameStateManager(Game game) {
         this.game = game;
         this.gameStates = new Stack<GameState>();
-        pushState(PLAY);
+        pushState(MENU);
     }
 
     public Game game() {
@@ -35,8 +38,14 @@ public class GameStateManager {
     }
 
     private GameState getState(int state) {
+        if (state == MENU) {
+            return new Menu(this);
+        }
         if (state == PLAY) {
             return new Play(this);
+        }
+        if (state == LEVEL_MENU) {
+            return new LevelSelect(this);
         }
         return null;
     }
