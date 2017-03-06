@@ -22,15 +22,6 @@ public class Player extends B2DSprite {
         setAnimation(sprites, 1 / 12f);
     }
 
-    public void respawn() {
-//        System.out.println(body.getPosition().x);
-//        body.getPosition().x = 1f;
-//        System.out.println(body.getPosition().x);
-//        System.out.println(body.getPosition().y);
-//        body.getPosition().y = 1f;
-//        System.out.println(body.getPosition().y);
-    }
-
     public void addPoint() {
         numPoints++;
     }

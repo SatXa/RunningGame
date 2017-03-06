@@ -9,6 +9,8 @@ import com.badlogic.gdx.InputAdapter;
 
 public class MyInputProcessor extends InputAdapter {
 
+    // KEYBOARD
+
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.W) {
@@ -23,10 +25,9 @@ public class MyInputProcessor extends InputAdapter {
         if (keycode == Input.Keys.SPACE) {
             MyInput.setKey(MyInput.SWITCH, true);
         }
-        if (keycode == Input.Keys.R) {
-            MyInput.setKey(MyInput.RESPAWN, true);
-        }
-
+//        if (keycode == Input.Keys.R) {
+//            MyInput.setKey(MyInput.RESPAWN, true);
+//        }
 
         return true;
     }
@@ -45,9 +46,27 @@ public class MyInputProcessor extends InputAdapter {
         if (keycode == Input.Keys.SPACE) {
             MyInput.setKey(MyInput.SWITCH, false);
         }
-        if (keycode == Input.Keys.R) {
-            MyInput.setKey(MyInput.RESPAWN, false);
-        }
+//        if (keycode == Input.Keys.R) {
+//            MyInput.setKey(MyInput.RESPAWN, false);
+//        }
+
+        return true;
+    }
+
+    // PHONE
+
+    public boolean touchDown(int x, int y, int pointer, int button) {
+        MyInput.x = x;
+        MyInput.y = y;
+        MyInput.down = true;
+
+        return true;
+    }
+
+    public boolean touchUp(int x, int y, int pointer, int button) {
+        MyInput.x = x;
+        MyInput.y = y;
+        MyInput.down = false;
 
         return true;
     }

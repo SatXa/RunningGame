@@ -25,19 +25,32 @@ public class HUD {
         }
     }
 
+    // TODO: ESTO VA RARO
     public void render(SpriteBatch sb) {
         short bits = player.getBody().getFixtureList().first()
                 .getFilterData().maskBits;
 
         sb.begin();
         if (bits != 0 && B2DVars.BIT_RED != 0) {
+//            sb.draw(blocks[0], 40, 200);
+//            sb.draw(blocks[1], 60, 200);
+//            sb.draw(blocks[2], 80, 200);
             sb.draw(blocks[0], 40, 200);
+//            System.out.println("ROJO");
         }
         if (bits != 0 && B2DVars.BIT_GREEN != 0) {
+//            sb.draw(blocks[1], 40, 200);
+//            sb.draw(blocks[2], 60, 200);
+//            sb.draw(blocks[0], 80, 200);
             sb.draw(blocks[1], 40, 200);
+//            System.out.println("VERDE");
         }
         if (bits != 0 && B2DVars.BIT_BLUE != 0) {
+//            sb.draw(blocks[2], 40, 200);
+//            sb.draw(blocks[0], 60, 200);
+//            sb.draw(blocks[1], 80, 200);
             sb.draw(blocks[2], 40, 200);
+//            System.out.println("AZUL");
         }
         sb.end();
     }

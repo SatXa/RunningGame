@@ -43,7 +43,7 @@ import static com.mygdx.game.handlers.B2DVars.PPM;
 public class Play extends GameState {
 
     // SET TO TRUE ONLY WHEN DEBUGGING TO SEE Box2D HITBOXES
-    private boolean debug = true;
+    private boolean debug = false;
 
     private World world;
     private Box2DDebugRenderer b2dr;
@@ -53,7 +53,11 @@ public class Play extends GameState {
 
     private TiledMap tileMap;
     private float tileSize;
+    private float tileMapWidth;
+    private float tileMapHeight;
     private OrthogonalTiledMapRenderer tmr;
+
+    private int level;
 
     private Player player;
     private Array<Pin> pins;
@@ -62,6 +66,8 @@ public class Play extends GameState {
 
     public Play(GameStateManager gsm) {
         super(gsm);
+
+        level = Game.getLevel();
 
         // Box2D world creation
         world = new World(new Vector2(0, -9.81f), true);
@@ -119,10 +125,31 @@ public class Play extends GameState {
 
     private void createTiles() {
         // MAP
-//        tileMap = new TmxMapLoader().load("maps/test_map.tmx");
         tileMap = new TmxMapLoader().load("maps/level1.tmx");
+
+        /*switch(level) {
+            case 1:
+                tileMap = new TmxMapLoader().load("maps/level1.tmx");
+                System.out.println("PASO 1");
+                break;
+            case 2:
+                tileMap = new TmxMapLoader().load("maps/level2.tmx");
+                System.out.println("PASO 2");
+                break;
+            case 3:
+                tileMap = new TmxMapLoader().load("maps/level3.tmx");
+                System.out.println("PASO 3");
+                break;
+            default:
+                tileMap = new TmxMapLoader().load("maps/level3.tmx");
+                System.out.println("PASO 4");
+                break;
+        }*/
+        
         tmr = new OrthogonalTiledMapRenderer(tileMap);
         tileSize = (Integer) tileMap.getProperties().get("tilewidth");
+        tileMapWidth = (Integer) tileMap.getProperties().get("width");
+        tileMapHeight = (Integer) tileMap.getProperties().get("height");
 
         TiledMapTileLayer layer;
 
@@ -213,12 +240,20 @@ public class Play extends GameState {
 
     @Override
     public void handleInput() {
+        // PHONE
+        if(MyInput.isPressed()) {
+            if(MyInput.x < Gdx.graphics.getWidth() / 2) {
+                switchBlocks();
+            }
+            else {
+                jump();
+            }
+        }
+
+        // KEYBOARD
         // Jump
         if (MyInput.isPressed(MyInput.UP)) {
-            if (cl.isPlayerOnGround()) {
-                player.getBody().applyForceToCenter(0, 250, true);
-                Game.res.getSound("jump").play();
-            }
+            jump();
         }
 
         // Block collision switch
@@ -228,9 +263,9 @@ public class Play extends GameState {
 
         // DOESN'T WORK
         // Respawn
-        if (MyInput.isPressed(MyInput.RESPAWN)) {
-            player.respawn();
-        }
+//        if (MyInput.isPressed(MyInput.RESPAWN)) {
+////            player.respawn();
+//        }
 
         // SCRAPPED (inconsistent, difficult to control)
         // Another jump? Feels smoother...
@@ -242,8 +277,10 @@ public class Play extends GameState {
 
         // Left
         if (MyInput.isDown(MyInput.LEFT)) {
-//            player.getBody().applyLinearImpulse(-1, 0, 0, 0, true);
-            player.getBody().applyForceToCenter(-5, 0, true);
+            if (player.getBody().getLinearVelocity().x > 0.1f) {
+//                player.getBody().applyLinearImpulse(-1, 0, 0, 0, true);
+                player.getBody().applyForceToCenter(-5, 0, true);
+            }
         }
 
         //Right
@@ -304,9 +341,33 @@ public class Play extends GameState {
 
         player.update(delta);
 
+        // Win?
+        if (player.getBody().getPosition().x * PPM > tileMapWidth * tileSize) {
+            Game.res.getSound("getPin").play();
+            gsm.setState(GameStateManager.PLAY);
+            Game.setLevel(level + 1);
+        }
+
+        // Lose?
+        // FALL
+        if (player.getBody().getPosition().y < 0) {
+            end();
+        }
+
+        // STOP
+        if (player.getBody().getLinearVelocity().x < 0.001f) {
+            end();
+        }
+
         for (int i = 0; i < pins.size; i++) {
             pins.get(i).update(delta);
         }
+    }
+
+    private void end() {
+        Game.res.getSound("dead").play();
+        gsm.setState(GameStateManager.PLAY);
+        Game.setLevel(1);
     }
 
     private void bodyRemoval() {
@@ -356,6 +417,13 @@ public class Play extends GameState {
 //            b2dCam.position.set(player.getPosition().x * PPM + Game.WIDTH / 4,
 //                    Game.HEIGHT / 2, 0);
 //            b2dCam.update();
+        }
+    }
+
+    public void jump() {
+        if (cl.isPlayerOnGround()) {
+            player.getBody().applyForceToCenter(0, 250, true);
+            Game.res.getSound("jump").play();
         }
     }
 }

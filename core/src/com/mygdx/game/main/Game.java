@@ -16,6 +16,16 @@ public class Game extends ApplicationAdapter {
     public static final int HEIGHT = 240;
     public static final int SCALE = 2;
 
+    private static int level = 1;
+
+    public static int getLevel() {
+        return level;
+    }
+
+    public static void setLevel(int level) {
+        Game.level = level;
+    }
+
     public static final float STEP = 1 / 60f;
     public static Content res;
     private float accum;
@@ -43,11 +53,11 @@ public class Game extends ApplicationAdapter {
         res = new Content();
         res.loadTexture("neku.png", "neku");
         res.loadTexture("pins.png", "pin");
-//        res.loadTexture("pin.png", "pin");
         res.loadTexture("hud.png", "hud");
 
         res.loadSound("jump.wav", "jump");
         res.loadSound("pin_get.wav", "getPin");
+        res.loadSound("dead.wav", "dead");
 
         this.sb = new SpriteBatch();
         this.cam = new OrthographicCamera();
