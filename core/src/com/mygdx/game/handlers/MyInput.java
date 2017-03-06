@@ -28,6 +28,7 @@ public class MyInput {
     public static void update() {
         for (int i = 0; i < NUM_KEYS; i++) {
             oldKeys[i] = keys[i];
+            oldDown = down;
         }
     }
 
@@ -38,7 +39,7 @@ public class MyInput {
     }
 
     public static boolean isDown(int i) {
-        return keys[i];
+        return keys[i] && !oldKeys[i];
     }
 
     public static boolean isPressed(int i) {

@@ -125,9 +125,9 @@ public class Play extends GameState {
 
     private void createTiles() {
         // MAP
-        tileMap = new TmxMapLoader().load("maps/level1.tmx");
+//        tileMap = new TmxMapLoader().load("maps/level1.tmx");
 
-        /*switch(level) {
+        switch(level) {
             case 1:
                 tileMap = new TmxMapLoader().load("maps/level1.tmx");
                 System.out.println("PASO 1");
@@ -144,7 +144,7 @@ public class Play extends GameState {
                 tileMap = new TmxMapLoader().load("maps/level3.tmx");
                 System.out.println("PASO 4");
                 break;
-        }*/
+        }
         
         tmr = new OrthogonalTiledMapRenderer(tileMap);
         tileSize = (Integer) tileMap.getProperties().get("tilewidth");
@@ -343,9 +343,13 @@ public class Play extends GameState {
 
         // Win?
         if (player.getBody().getPosition().x * PPM > tileMapWidth * tileSize) {
+            if (level == 3) {
+                level = 0;
+            }
             Game.res.getSound("getPin").play();
-            gsm.setState(GameStateManager.PLAY);
             Game.setLevel(level + 1);
+            gsm.setState(GameStateManager.PLAY);
+            this.dispose();
         }
 
         // Lose?
@@ -366,8 +370,9 @@ public class Play extends GameState {
 
     private void end() {
         Game.res.getSound("dead").play();
-        gsm.setState(GameStateManager.PLAY);
         Game.setLevel(1);
+        gsm.setState(GameStateManager.PLAY);
+        this.dispose();
     }
 
     private void bodyRemoval() {
@@ -422,7 +427,7 @@ public class Play extends GameState {
 
     public void jump() {
         if (cl.isPlayerOnGround()) {
-            player.getBody().applyForceToCenter(0, 250, true);
+            player.getBody().applyForceToCenter(0, 275, true);
             Game.res.getSound("jump").play();
         }
     }

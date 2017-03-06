@@ -2,6 +2,7 @@ package com.mygdx.game.main;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.handlers.Content;
@@ -58,6 +59,12 @@ public class Game extends ApplicationAdapter {
         res.loadSound("jump.wav", "jump");
         res.loadSound("pin_get.wav", "getPin");
         res.loadSound("dead.wav", "dead");
+
+        res.loadMusic("3min.mp3", "song");
+
+        Music music = Game.res.getMusic("song");
+        music.setLooping(true);
+        music.play();
 
         this.sb = new SpriteBatch();
         this.cam = new OrthographicCamera();
