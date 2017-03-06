@@ -396,6 +396,7 @@ public class Play extends GameState {
         // Stalker Camera incoming
         cam.position.set(player.getPosition().x * PPM + Game.WIDTH / 4,
                 Game.HEIGHT / 2, 0);
+
         cam.update();
 
         // TileMap
