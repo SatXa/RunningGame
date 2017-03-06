@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.handlers.Content;
 import com.mygdx.game.handlers.GameStateManager;
 import com.mygdx.game.handlers.MyInput;
 import com.mygdx.game.handlers.MyInputProcessor;
@@ -16,12 +17,11 @@ public class Game extends ApplicationAdapter {
     public static final int SCALE = 2;
 
     public static final float STEP = 1 / 60f;
+    public static Content res;
     private float accum;
-
     private SpriteBatch sb;
     private OrthographicCamera cam;
     private OrthographicCamera hudCam;
-
     private GameStateManager gsm;
 
     public SpriteBatch getSpriteBatch() {
@@ -38,8 +38,12 @@ public class Game extends ApplicationAdapter {
 
     @Override
     public void create() {
-
         Gdx.input.setInputProcessor(new MyInputProcessor());
+
+        res = new Content();
+        res.loadTexture("neku.png", "neku");
+        res.loadTexture("pin.png", "pin");
+        res.loadTexture("hud.png", "hud");
 
         this.sb = new SpriteBatch();
         this.cam = new OrthographicCamera();
@@ -62,6 +66,11 @@ public class Game extends ApplicationAdapter {
 
             MyInput.update();
         }
+
+//        sb.setProjectionMatrix(hudCam.combined);
+//        sb.begin();
+//        sb.draw(res.getTexture("neku"), 0, 0);
+//        sb.end();
     }
 
     @Override

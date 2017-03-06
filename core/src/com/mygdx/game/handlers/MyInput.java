@@ -6,12 +6,14 @@ package com.mygdx.game.handlers;
 
 public class MyInput {
 
+    public static final int NUM_KEYS = 5;
+    public static final int UP = 0;
+    public static final int LEFT = 1;
+    public static final int RIGHT = 2;
+    public static final int SWITCH = 3;
+    public static final int RESPAWN = 4;
     public static boolean[] keys;
     public static boolean[] oldKeys;
-
-    public static final int NUM_KEYS = 2;
-    public static final int BUTTON1 = 0;
-    public static final int BUTTON2 = 1;
 
     static {
         keys = new boolean[NUM_KEYS];
@@ -19,7 +21,7 @@ public class MyInput {
     }
 
     public static void update() {
-        for(int i = 0; i < NUM_KEYS; i++) {
+        for (int i = 0; i < NUM_KEYS; i++) {
             oldKeys[i] = keys[i];
         }
     }

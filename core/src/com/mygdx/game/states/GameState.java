@@ -2,8 +2,8 @@ package com.mygdx.game.states;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.game.main.Game;
 import com.mygdx.game.handlers.GameStateManager;
+import com.mygdx.game.main.Game;
 
 /**
  * Created by SatXa on 5/3/17.
@@ -27,8 +27,11 @@ public abstract class GameState {
     }
 
     public abstract void handleInput();
+
     public abstract void update(float delta);
+
     public abstract void render();
+
     public abstract void dispose();
 
 }

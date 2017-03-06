@@ -12,11 +12,9 @@ import java.util.Stack;
 
 public class GameStateManager {
 
-    private Game game;
-
-    private Stack<GameState> gameStates;
-
     public static final int PLAY = 001;
+    private Game game;
+    private Stack<GameState> gameStates;
 
     public GameStateManager(Game game) {
         this.game = game;
@@ -37,7 +35,7 @@ public class GameStateManager {
     }
 
     private GameState getState(int state) {
-        if(state == PLAY) {
+        if (state == PLAY) {
             return new Play(this);
         }
         return null;
